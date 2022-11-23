@@ -8,23 +8,30 @@ public class SellerMessage extends Message {
   public SellerMessage(String message) {
     super(message, "SELLER");
 
-    if (!message.equals("enviar")) {
+    if (!message.equals("enviar") && !message.equals("sair")) {
       String typeOperation = message.split("-")[0].toLowerCase();
-      String data = message.split("-")[1];
-      this.data = data;
-
       this.isValidSell = typeOperation.equals("sell");
-      String[] dataList = data.split(";");
-      this.isValidSell = this.isValidSell && (dataList.length >= 5);
+      if (isValidSell) {
+        String data = message.split("-")[1];
+        this.data = data;
 
-      if (this.isValidSell) {
-        Sell sell = new Sell(
-            dataList[0].trim(),
-            dataList[1],
-            dataList[2],
-            dataList[3],
-            Float.parseFloat(dataList[4]));
-        this.sell = sell;
+        String[] dataList = data.split(";");
+        this.isValidSell = this.isValidSell && (dataList.length >= 5);
+
+        if (this.isValidSell) {
+          Sell sell = new Sell(
+              dataList[0].trim(),
+              dataList[1],
+              dataList[2],
+              dataList[3],
+              Float.parseFloat(dataList[4]));
+          this.sell = sell;
+
+        } else {
+          System.out.println("\nERRO: Os dados informados estão inválidos!\n");
+        }
+      } else {
+        System.out.println("\nERRO: Os dados informados estão inválidos!\n");
       }
     }
   }

@@ -12,10 +12,11 @@ import repositories.VendasRepository;
 
 public class ServerThread extends Thread {
   private Socket socket;
-  private VendasRepository repository = new VendasRepository();
+  private VendasRepository repository;
 
   public ServerThread(Socket socket) {
     this.socket = socket;
+    this.repository = new VendasRepository();
   }
 
   @Override
@@ -31,12 +32,15 @@ public class ServerThread extends Thread {
         Message message = (Message) received.readObject();
         String clientConnected = message.getClientConnected();
 
-        if (clientConnected.equals("SELLER")) {
-          this.handleSellerOption((SellerMessage) message);
-        } else if (clientConnected.equals("MANAGER")) {
-          this.handleManagerOption((ManagerMessage) message);
-        } else {
-          send.writeUTF("ERROR: Opção seleciona é inválida!");
+        switch (clientConnected) {
+          case "SELLER":
+            this.handleSellerOption((SellerMessage) message);
+            break;
+          case "MANAGER":
+            this.handleManagerOption((ManagerMessage) message);
+            break;
+          default:
+            send.writeUTF("ERROR: Opção seleciona é inválida!");
         }
 
         if (message.getMessage().equals("sair")) {
@@ -61,7 +65,7 @@ public class ServerThread extends Thread {
       switch (message.getMessage()) {
         case "enviar":
           send.writeUTF(
-              "Informe a venda no seguinte formato:\nsell-Código da venda;Nome do vendedor;Nome da loja;Data da venda (DD/MM/yyyy);Valor da venda\n");
+              "\nInforme a venda no seguinte formato:\nsell-Código da venda;Nome do vendedor;Nome da loja;Data da venda (DD/MM/yyyy);Valor da venda\n");
           break;
         default:
           if (message.hasSellOption()) {
@@ -94,6 +98,10 @@ public class ServerThread extends Thread {
           String totalStore = this.repository.getTotalVendasByStore(message.getStore());
           send.writeUTF(totalStore);
           break;
+        case "03":
+          String totalAtPeriod = this.repository.getTotalVendasAtPeriod(message.getInitalDate(), message.getFinalDate());
+          send.writeUTF(totalAtPeriod);
+          break;
         case "04":
           String response = this.repository.getBestSeller();
           send.writeUTF(response);
@@ -115,11 +123,11 @@ public class ServerThread extends Thread {
     try {
       DataOutputStream send = new DataOutputStream(this.socket.getOutputStream());
       String text = "\n-----Menu de opções-----\n"
-          + "01 - Visualizar total de vendas de um vendedor\n"
-          + "02 - Visualizar total de vendas de uma loja\n"
-          + "03 - Visualizar total de vendas das lojas por periodo\n"
-          + "04 - Visualizar vendedor com maior valor de vendas\n"
-          + "05 - Visualizar loja com maior valor de vendas\n";
+          + "01 - Visualizar total de vendas de um vendedor (Informe nesse formato: 01-Nome do vendedor)\n"
+          + "02 - Visualizar total de vendas de uma loja (Informe nesse formato: 02-Nome da loja)\n"
+          + "03 - Visualizar total de vendas das lojas por periodo (Informe nesse formato: 03-Data inicial (DD/MM/yyyy);Data final (DD/MM/yyyy))\n"
+          + "04 - Visualizar vendedor com maior valor de vendas (Informe nesse formato: 04)\n"
+          + "05 - Visualizar loja com maior valor de vendas (Informe nesse formato: 05)\n";
 
       send.writeUTF(text);
     } catch (Exception e) {

@@ -11,18 +11,38 @@ public class Database {
   private static final String SEPARATOR = "\n";
   private static final String HEADER = "code,seller,store,date,value";
   private FileWriter file;
+  private String databaseContent = "";
 
   public Database() {
     try {
       File file = new File("./src/database/database.csv");
       if (file.exists()) {
         Scanner scanner = new Scanner(file);
-        if (!scanner.hasNext()) {
+        Boolean isEmpty = !scanner.hasNext();
+        String line = "";
+        if (!isEmpty) {
+          line = scanner.next();
+          this.databaseContent += line + "\n";
+        }
+        Boolean hasNext = scanner.hasNext();
+
+        while (hasNext) {
+          this.databaseContent += scanner.next() + "\n";
+          hasNext = scanner.hasNext();
+        }
+
+        if (isEmpty) {
           this.file = new FileWriter(file);
-          this.file.append(HEADER);
-          this.file.append(SEPARATOR);
+          this.databaseContent = HEADER + SEPARATOR;
+          this.file.append(this.databaseContent);
+          this.file.flush();
+        } else {
+          this.file = new FileWriter(file);
+          this.file.append(this.databaseContent);
           this.file.flush();
         }
+
+        scanner.close();
       } else {
         this.file = new FileWriter(file);
         this.file.append(HEADER);
@@ -61,11 +81,15 @@ public class Database {
       e.printStackTrace();
       return new ArrayList<Sell>();
     }
-    // return new ArrayList<Sell>();
   }
 
   public void insert(Sell sell) {
     try {
+      File file = new File("./src/database/database.csv");
+
+      this.file = new FileWriter(file);
+      this.file.append(this.databaseContent);
+
       this.file.append(sell.getCode());
       this.file.append(DELIMITER);
       this.file.append(sell.getSellerName());
@@ -76,6 +100,7 @@ public class Database {
       this.file.append(DELIMITER);
       this.file.append(Float.toString(sell.getValue()));
       this.file.append(SEPARATOR);
+
       this.file.flush();
     } catch (Exception e) {
       e.printStackTrace();

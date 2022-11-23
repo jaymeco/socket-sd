@@ -1,0 +1,23 @@
+------REQUERIMENTOS DO SISTEMA-------
+
+Linguagem utilizada: 
+  java version "11.0.16" 2022-07-19 LTS
+  Java(TM) SE Runtime Environment 18.9 (build 11.0.16+11-LTS-199)
+  Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.16+11-LTS-199, mixed mode)
+
+Bibliotecas Utilizadas:
+  Todas nativas do sistema java
+
+Ferramenta utilizada para o desenvolvimento:
+  Vscode com a extensão 'Extension Pack for Java';
+
+------INSTRUÇÕES DE INSTALAÇÃO-------
+
+1° Passo: Clonar repositorio git (https://github.com/jaymeco/socket-sd.git)
+
+2° Passo: Abrir projeto em uma IDE de sua preferência
+
+3° Passo: Excutar os arquivos principais
+  -Executar servidor: Server.java
+  -Executar client do vendedor: VendedorClient.java
+  -Executar client do gerente: GerenteClient.java

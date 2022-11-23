@@ -5,6 +5,9 @@ public class ManagerMessage extends Message {
   private String option = "menu";
   private String seller = "";
   private String store = "";
+  private String range = "";
+  private String initialDate = "";
+  private String finalDate = "";
 
   public ManagerMessage(String message) {
     super(message, "MANAGER");
@@ -18,6 +21,11 @@ public class ManagerMessage extends Message {
           break;
         case "02":
           this.store = message.split("-")[1];
+          break;
+        case "03":
+          this.range = message.split("-")[1];
+          this.initialDate = this.range.split(";")[0];
+          this.finalDate = this.range.split(";")[1];
           break;
         default:
           break;
@@ -35,5 +43,13 @@ public class ManagerMessage extends Message {
 
   public String getStore() {
     return this.store;
+  }
+
+  public String getInitalDate() {
+    return this.initialDate;
+  }
+
+  public String getFinalDate() {
+    return this.finalDate;
   }
 }

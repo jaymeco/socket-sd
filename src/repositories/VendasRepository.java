@@ -1,6 +1,9 @@
 package repositories;
 
+import java.net.SocketPermission;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -105,5 +108,46 @@ public class VendasRepository {
         " com um total de "
         + maxSell.getValue() +
         " reais\n";
+  }
+
+  public String getTotalVendasAtPeriod(String initial, String finaly) {
+    try {
+      int count = 0;
+      Map<String, Integer> grouped = new HashMap<String, Integer>();
+      String response = "";
+
+      SimpleDateFormat sdfo = new SimpleDateFormat("MM/DD/yyyy");
+      Date initialDate = sdfo.parse(initial);
+      Date finalDate = sdfo.parse(finaly);
+
+      for (Sell item : this.getAll()) {
+        Date date = sdfo.parse(item.getDate());
+        String key = item.getStore();
+        int countStore = 0;
+
+        if (date.after(initialDate) && date.before(finalDate)) {
+          countStore += 1;
+
+          if (!grouped.containsKey(key)) {
+            grouped.put(key, countStore);
+          } else {
+            grouped.replace(key, grouped.get(key) + countStore);
+          }
+
+          count++;
+        }
+      }
+      for (Entry<String, Integer> store : grouped.entrySet()) {
+        response = "Total de vendas na loja " + store.getKey() + " neste período: " + store.getValue() + "\n";
+      }
+      
+      return "Total de vendas das lojas no período: " + count 
+      + "\n " + response;
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      return "Erro ao executar solicitação!";
+    }
+
   }
 }

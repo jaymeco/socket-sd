@@ -36,8 +36,4 @@ public class Sell implements Serializable {
   public float getValue() {
     return this.value;
   }
-
-  public String save() {
-    return "OK! Sua venda foi salva com sucesso!";
-  }
 }

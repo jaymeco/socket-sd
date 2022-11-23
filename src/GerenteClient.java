@@ -2,17 +2,18 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-import Threads.VendedorThread;
+import Threads.GerenteThread;
+import models.ManagerMessage;
 import models.SellerMessage;
 
-public class VendedorClient {
+public class GerenteClient {
   public static void main(String[] args) {
     try {
       Socket client = new Socket("localhost", 4000);
       Scanner scanner = new Scanner(System.in);
 
       System.out.println("\n-----Conectado com servidor-----\n");
-      System.out.println("Digite 'enviar' para informar um venda\nDigite 'sair' para encerrar a comunicação\n");
+      System.out.println("Digite 'menu' para consultar o menu de opções\nDigite 'sair' para encerrar a comunicação\n");
 
       boolean exit = false;
       while (!exit) {
@@ -20,7 +21,7 @@ public class VendedorClient {
 
         String teclado = scanner.nextLine();
 
-        SellerMessage message = new SellerMessage(teclado);
+        ManagerMessage message = new ManagerMessage(teclado);
 
         if (teclado.equals("sair")) {
           exit = true;
@@ -30,7 +31,7 @@ public class VendedorClient {
 
         send.writeObject(message);
 
-        VendedorThread thread = new VendedorThread(client);
+        GerenteThread thread = new GerenteThread(client);
         thread.start();
       }
     } catch (Exception e) {

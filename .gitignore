@@ -1,2 +1,3 @@
-/lib
 /.vscode
+/src/database/*.csv
+/bin/database/*.csv
